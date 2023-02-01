@@ -1,25 +1,49 @@
-import logo from './logo.svg';
-import './App.css';
+import React,{useEffect, useState} from 'react'
+import './App.css'
 
-function App() {
+export default function App() {
+  const [backendData, setBackendData]=useState([{}]);
+
+  useEffect(() => {
+    fetch('/api').then(
+      response =>response.json()
+    ).then(
+      data => {
+        setBackendData(data)
+      }
+    )
+  }, []);
+
+  const handleDelete = (id) => {
+    setBackendData(backendData.filter((users) => users.id !== id));
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+    <div style={{marginTop: "150px"}}>
 
-export default App;
+    <table className='styled-table'>
+    <thead>
+      <tr>
+        <th style={{textAlign: "center"}}>Name</th>
+        <th style={{textAlign: "center"}}>Email</th>
+        <th style={{textAlign: "center"}}>Phone</th>
+        <th style={{textAlign: "center"}}>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {backendData.map((user) => (
+        <tr key={user.id}>
+          <th scope='row'>{user.id+1}</th>
+          <td>{user.name}</td>
+          <td>{user.email}</td>
+          <td>{user.phone}</td>
+          <td>
+            <button onClick={() => handleDelete(user.id)}>Delete</button>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+  </div>
+);
+};
